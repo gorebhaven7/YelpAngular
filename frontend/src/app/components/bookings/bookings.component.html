@@ -1,0 +1,42 @@
+<div class="m-5 mt-2">
+    <ul class="nav justify-content-end">
+        <li class="nav-item">
+            <a class="mt-4 nav-link text-dark" routerLink="/search" routerLinkActive="active">Search</a>
+        </li>
+        <li class="nav-item">
+            <a class="mt-4 rounded-4 nav-link active border border-3 border-dark text-dark" routerLink="/bookings" routerLinkActive="active">My Bookings</a>
+        </li>
+    </ul>
+</div>
+<div *ngIf = "book; else showData" class="text-center" >
+    <h2><b>List of your reservations</b></h2>
+    <div  class="container content-center col-12 col-md-12 col-lg-5 col-xl-7 pt-2">
+        <table class = "table mb-0 bg-white text-center rounded-3">
+          <thead>
+          <tr>
+            <th><b>#</b></th>
+            <th><b>Business Name</b></th>
+            <th><b>Date</b></th>
+            <th><b>Time</b></th>
+            <th><b>E-mail</b></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody class="hovereffect">
+          <tr *ngFor="let row of reservationTable, let i = index">
+            <td><b>{{i+1}}</b></td>
+            <td>{{row.name}}</td>
+            <td>{{row.date}}</td>
+            <td>{{row.hour}}:{{row.minute}}</td>
+            <td>{{row.email}}</td>
+            <td><i class="bi bi-trash" (click) = "deleteBooking(row.id)"></i></td>
+          </tr>
+        </tbody>
+        </table>
+      </div>
+    </div>
+    <ng-template #showData>
+        <div class="container content-center rounded-4 bg-white text-danger col-12 col-md-12 col-lg-3 col-xl-2 text-center mt-4">
+            <h3><b>No Reservations to show</b></h3>
+        </div>
+    </ng-template>

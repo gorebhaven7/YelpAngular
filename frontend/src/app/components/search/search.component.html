@@ -1,0 +1,353 @@
+<div class="m-5 mt-2">
+    <ul class="nav justify-content-end">
+        <li class="nav-item">
+            <a class="mt-4 rounded-4 nav-link active border border-3 border-dark text-dark" routerLink="/search" routerLinkActive="active">Search</a>
+        </li>
+        <li class="nav-item">
+            <a class="mt-4 nav-link text-dark" routerLink="/bookings" routerLinkActive="active">My Bookings</a>
+        </li>
+    </ul>
+</div>
+<form #bussForm ="ngForm" (ngSubmit)="submit(bussForm)" ngNativeValidate >
+    <div class="container py-1 justify-content-center">
+      <div class="row d-flex justify-content-center align-items-center">
+        <div class="col-12 col-md-12 col-lg-10 col-xl-7 justify-content-center">
+          <div class="card shadow-2-strong justify-content-center" style="border-radius: 1rem;">
+            <div class="card-body p-4">
+  
+              <h2 class="mb-3 mt-3 text-center"><b>Business Search</b></h2>
+  
+              <div class="form-outline mb-3 px-4">
+                <label class="form-label " for="typeKeyword">Keyword<span class="p-1 text-danger">*</span></label>
+                <input type="text" id="typeKeyword" matInput name="key" class="form-control p-2" [matAutocomplete]="auto" (input)="onInputChange()" required ngModel/>
+                <mat-autocomplete #auto="matAutocomplete">
+                  <mat-option *ngIf="loading;">
+                    <mat-spinner diameter="25"></mat-spinner>
+                  </mat-option>
+                  <div *ngIf = "!loading">
+                  <mat-option *ngFor="let option of filteredOptions" [value]="option">
+                    {{option}}
+                  </mat-option>
+                </div>
+                </mat-autocomplete>
+
+
+              </div>
+              <div class="row">
+                <div class="col-md-6 mb-4 ">
+                  <div class="form-outline px-4">
+                    <label class="form-label" for="formDistance">Distance</label>
+                    <input type="text" id="formDistance" name="distance" class="form-control p-2 border border-dark border-opacity-10" placeholder="10" ngModel/>
+                    
+                  </div>
+                </div>
+                <div class="col-6 col-md-5 mb-4">
+                  <div class="form-outline px-4">
+                    <label class="form-label" for="formCategory">Category<span class="p-1 text-danger">*</span></label>
+
+                    <select class="form-select p-2" id="cat" aria-label="Default" name="category" (change)="selectedCategoryChangeHandler($event)">
+                        <option selected="true">Default</option>
+                        <option value="Arts & Enterainment">Arts & Enterainment</option>
+                        <option value="Health & Medical">Health & Medical</option>
+                        <option value="Hotels & Travel">Hotels & Travel</option>
+                        <option value="Food">Food</option>
+                        <option value="Professional Services">Professional Services</option>
+                      </select>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf = "checkbox; else noTickCheck">
+              <div class="form-outline mb-4 px-4">
+                <label class="form-label" for="typeLocation">Location<span class="p-1 text-danger">*</span></label>
+                <input type="text" id="typeLocation" class="form-control p-2" name="location" disabled required ngModel/>
+              </div>
+            </div>
+            <ng-template #noTickCheck>
+              <div class="form-outline mb-4 px-4">
+                <label class="form-label" for="typeLocation">Location<span class="p-1 text-danger">*</span></label>
+                <input type="text" id="typeLocation" class="form-control p-2" name="location"  required ngModel/>
+              </div>
+              </ng-template>
+              <div class="form-check d-flex justify-content-start mb-4">
+               <input class="form-check-input me-3 mx-0" type="checkbox" name= "check"value="" id="formcheck" (change) = "checkboxchanged()" ngModel/>
+                <label class="form-check-label px-0" for="formlabel"> Auto-detect my location </label>
+              </div>
+            <div class="form-check d-flex justify-content-center mb-4 ">
+              <button class="btn btn-lg btn-block btn-danger mx-3" type="submit">Submit</button>
+              <button class="btn btn-lg btn-block btn-primary mx-3" type="reset" (click)="clearr(bussForm)">Clear</button>
+            </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+<div *ngIf="tablevisible; else cardvisible">
+    <div *ngIf="ydata;">
+    <div *ngIf="checkydata; else noData">
+
+    <div  class="container content-center col-12 col-md-12 col-lg-7 col-xl-9 pt-5 pb-5 rounded-3">
+    <table class="table table-striped mb-0 bg-dark text-center rounded-3">
+      <thead>
+      <tr>
+        <th><b>#</b></th>
+        <th><b>Image</b></th>
+        <th><b>Business Name</b></th>
+        <th><b>Rating</b></th>
+        <th><b>Distance (miles)</b></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let business of ydata, let i = index" 
+            (click)="get_card_data(business.id)" class="pointer">
+        <td><b>{{i+1}}</b></td>
+        <td>
+          <div class = " text-center">
+          <img src = {{business.image_url}} style="width:100px;height:100px" >
+        </div>
+      </td>
+        <td>{{business.name}}</td>
+        <td>{{business.rating}}</td>
+        <td>{{(business.distance/1609).toFixed(0)}}</td>
+      </tr>
+    </tbody>
+
+    </table>
+  </div>
+</div>
+
+<ng-template #noData>
+  <div class=" container content-center rounded-4 bg-white text-danger col-12 col-md-12 col-lg-3 col-xl-2 text-center mt-4">
+  <h3><b>No results available</b></h3>
+  </div>  
+</ng-template>
+</div>
+</div>
+
+<ng-template #cardvisible>
+<div *ngIf="cardData" class="pb-4">
+<div  class="rounded-3 container bg-white content-center col-12 col-md-12 col-lg-6 col-xl-6 mt-5 p-0 pb-2">
+  <mat-icon class = "m-3 mb-0" (click) = "back()">keyboard_backspace</mat-icon>
+  <header class="text-center">
+    <div class="h1">{{cardData.name}}</div>
+</header>
+<mat-tab-group mat-align-tabs="center" backgroundColor="accent">
+  <mat-tab label="Business details">
+
+    <div class = "row pt-2">
+      <div class="col-12 col-md-12 col-lg-6 col-xl-6">
+        <div class="row p-3">
+          <div class="col-12">
+            <div class = "text-center">
+              <div class = "h4">Address</div>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class = "text-center" >
+              {{cardData.location.display_address.join(' ')}}
+            </div>
+          </div>
+        </div>
+        <div class="row pt-4">
+          <div class="col-12">
+            <div class = "text-center">
+              <div class = "h4">Phone</div>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class = "text-center">
+              {{cardData.display_phone}}
+            </div>
+          </div>
+        </div>
+        <div class="row pt-4 pb-4">
+          <div class="col-12">
+            <div class = "text-center">
+              <div class = "h4">Status</div>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class = "text-center">
+              <span *ngIf="cardData.hours[0].is_open_now; else close" style="color:green;">Open</span>
+              <ng-template #close>
+                <span style="color:red;">Closed</span>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-md-12 col-lg-6 col-xl-6">
+        <div class="row p-3">
+          <div class="col-12">
+            <div class = "text-center">
+              <div class = "h4">Category</div>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class = "text-center">
+              {{cate}}
+            </div>
+          </div>
+        </div>
+        <div class="row pt-4">
+          <div class="col-12">
+            <div class = "text-center">
+              <div class = "h4">Price range</div>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class = "text-center">
+              {{cardData.price}}
+            </div>
+          </div>
+        </div>
+        <div class="row pt-4 pb-2">
+          <div class="col-12">
+            <div class = "text-center">
+              <div class = "h4">Visit yelp for more</div>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class = "text-center">
+              <a href = "{{cardData.url}}" target="_blank">Business link</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div *ngIf="!reserved; else cancelReservation" class="container">
+      <div class="row">
+        <div class="col text-center">
+          <button class="btn btn-lg btn-block btn-danger mx-3" type="submit" data-toggle="modal" data-target="#exampleModal">Reserve Now</button>
+        </div>
+      </div>
+    </div>
+    <ng-template #cancelReservation>
+      <div class="container">
+        <div class="row">
+          <div class="col text-center">
+            <button class="btn btn-lg btn-block btn-primary mx-3" (click) = "deleteBooking(cardData.id)" >Cancel Reservation</button>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+
+    <div class="container mt-4 mb-3">
+      <div class="row">
+        <div class="col text-center social-links ">
+          Share on:  <a href="https://twitter.com/intent/tweet?text=Check%20{{cardData.name}}%20on%20Yelp&url={{cardData.url}}" target="_blank" class = "twitter me-2"><i class="bi bi-twitter" style="font-size:26px;"></i></a>
+          <a href="https://www.facebook.com/sharer/sharer.php?u={{cardData.url}}" target="_blank" class="facebbok"><i class="bi bi-facebook" style="font-size:26px;"></i></a>
+        </div>
+      </div>
+    </div>
+
+    <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <div class="content-center">
+          <img src="{{firstimage}}" alt="First slide" class = "d-flex w-100">
+        </div>
+      </div>
+        <div class="carousel-item item" *ngFor = "let image of restimages">
+          <div class="content-center">
+          <img class="d-flex w-100" src="{{image}}" alt="Second slide">
+        </div>
+        </div>
+      </div>
+      <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      </a>
+      <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      </a>
+    </div>
+
+  </mat-tab>
+  <mat-tab label="Map location">
+    <div class="my-google-map mt-4 mb-4">
+      <google-map width = "100%" [options] = "mapOptions">
+        <map-marker [position]="{lat:(cardData.coordinates.latitude),lng:(cardData.coordinates.longitude)}"></map-marker>
+      </google-map>
+    </div>
+  </mat-tab>
+  <mat-tab label="Reviews">
+    <table class="table table-striped mb-0">
+      <tbody >
+        <tr *ngFor = "let review of reviews">
+          <td><b>{{review.user.name}}</b><br>Rating: {{review.rating}}/5<br><br>{{review.text}}<br><br>{{review.time_created.split(' ')[0]}}<br><br></td>
+        </tr>
+      </tbody>
+    </table>
+  </mat-tab>
+</mat-tab-group>
+</div>
+</div>
+</ng-template>
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header pb-0">
+        <h1 class="modal-title" id="exampleModalLabel" ><strong>Reservation form</strong></h1>
+      </div>
+      <div class="modal-body">
+        <header class="text-center">
+          <div class="h5">{{cardData.name}}</div>
+      </header>
+        <form [formGroup] = "reserveForm" (ngSubmit) = "onReserve()">
+          <div class="form-group">
+            <label for="email">Email: </label>
+            <input formControlName="email" [ngClass]="{'is-invalid':submitted && reserveForm.controls['email'].errors}" type="text" class="form-control">
+            <div *ngIf="submitted && reserveForm.controls['email'].errors" class="text-danger">
+              <div *ngIf="submitted && reserveForm.controls['email'].errors['required']">Email is required</div>
+              <div *ngIf="submitted && reserveForm.controls['email'].errors['email']">Email is invalid</div>
+            </div>
+          </div>
+          <div class="form-group">
+          <label for="date">Date: </label>
+          <input formControlName="date" [ngClass]="{'is-invalid':submitted && reserveForm.controls['date'].errors}" type="date" class="form-control" id="date">
+          <div *ngIf="submitted && reserveForm.controls['date'].errors" class="text-danger">
+            <div *ngIf="submitted && reserveForm.controls['date'].errors['required']">Date is required</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="time">Time: </label>
+            <div class="d-flex justify-content-start">
+            <select formControlName="hour" [ngClass]="{'is-invalid':submitted && reserveForm.controls['hour'].errors}" type="text" class="form-control w-50">
+              <option value="10">10</option>
+              <option value="11">11</option>
+              <option value="12">12</option>
+              <option value="13">13</option>
+              <option value="14">14</option>
+              <option value="15">15</option>
+              <option value="16">16</option>
+              <option value="17">17</option>
+              </select>
+            <div class = "p-2"> :</div>
+              <select formControlName="minute" [ngClass]="{'is-invalid':submitted && reserveForm.controls['minute'].errors}" type="text" class="form-control w-50">
+                <option value="00">00</option>
+                <option value="15">15</option>
+                <option value="30">30</option>
+                <option value="45">45</option>
+                </select>
+              <div class="m-2"><mat-icon>access_time</mat-icon></div>
+              
+            </div>
+              
+          </div>
+          
+          <div class="container">
+            <div class="row form-group">
+              <div class="col text-center">
+                <button class="btn btn-block btn-danger mt-3" type="submit" id="modalsubmit">Submit</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="close" class="btn btn-dark" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

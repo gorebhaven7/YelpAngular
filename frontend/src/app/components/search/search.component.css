@@ -1,0 +1,16 @@
+.pointer{
+    cursor: pointer;
+}
+.w-100 {
+    width: 50% !important;
+    height: 30vh;
+    margin: auto;
+  }
+  .carousel-control-next,
+.carousel-control-prev /*, .carousel-indicators */ {
+    filter: invert(100%);
+}
+.w-50{
+    width: 20% !important;
+    height: 4vh;
+}

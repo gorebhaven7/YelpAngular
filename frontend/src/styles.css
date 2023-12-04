@@ -1,0 +1,12 @@
+/* You can add global styles to this file, and also import other style files */
+@import "~bootstrap-icons/font/bootstrap-icons.css";
+body {
+  background-image:linear-gradient(white,rgba(9,100,185,0.5)), url('./app/image/city.jpg');
+  height: 100vh;
+  background-repeat:no-repeat;
+  background-attachment: fixed;
+  background-position:bottom;
+  
+  }
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
